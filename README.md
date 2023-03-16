@@ -1,4 +1,4 @@
-# tv-show-renamer
+# Tv Show Renamer
 
 This is a Java program that renames subtitle files for TV show episodes based on the episode's name obtained from an online movie database (OMDb).
 
