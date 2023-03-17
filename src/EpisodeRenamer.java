@@ -10,14 +10,14 @@ public class EpisodeRenamer {
 
     final static String apiKey = "16edf408";
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void renameEpisodes(String folderPath,String extension,String showName,String seasonNum) throws InterruptedException {
 
         //Requirements: Have all episodes in the folder and specify the 4 parameters below.
 
-        String folderPath = "/Users/mshereef/Desktop/South.Park.S14.1080p.BluRay.x264-UNTOUCHABLES[rartv]/Subs"; // Update this to the path of your folder
-        String extension = ".srt"; // Type of file being changed
-        String showName = "South Park";// Update this to the name of your TV show
-        String seasonNum = "14"; // Season of show
+//         folderPath = "/Users/mshereef/Desktop/South.Park.S14.1080p.BluRay.x264-UNTOUCHABLES[rartv]"; // Update this to the path of your folder
+//         extension = ".mkv"; // Type of file being changed
+//         showName = "South Park";// Update this to the name of your TV show
+//         seasonNum = "14"; // Season of show
 
         File folder = new File(folderPath);
         folder = new File(folderPath);
