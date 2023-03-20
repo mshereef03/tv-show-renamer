@@ -34,7 +34,7 @@ public class EpisodeRenamerGUI extends JFrame implements ActionListener {
     private final JCheckBox complex;
 
 
-
+    private final JScrollPane scroll;
     private JTextArea outputArea;
 
     private JPanel panel;
@@ -110,19 +110,13 @@ public class EpisodeRenamerGUI extends JFrame implements ActionListener {
         outputArea = new JTextArea(10, 40);
         outputArea.setEditable(false);
 
-        // Create a new PrintStream that redirects the standard output stream to the JTextArea
-        PrintStream printStream = new PrintStream(new CustomOutputStream(outputArea));
-
-        // Redirect the standard output stream to the PrintStream
-        System.setOut(printStream);
-        System.setErr(printStream);
-
         // Add the outputArea to the GUI layout
         constraints.gridx = 3;
         constraints.gridy = 0;
         constraints.gridheight = 5;
         constraints.fill = GridBagConstraints.BOTH;
-        panel.add(new JScrollPane(outputArea), constraints);
+        scroll = new JScrollPane(outputArea);
+        panel.add(scroll, constraints);
 
         JPanel bottom = new JPanel(new GridLayout());
 
@@ -171,14 +165,13 @@ public class EpisodeRenamerGUI extends JFrame implements ActionListener {
             if(extension.startsWith(".")&&responseCode==200&&status=='T'&&!(basic.isSelected()&&complex.isSelected())) {
 
                 repaint();
-                System.out.println("Starting...");
                 outputArea.update(outputArea.getGraphics());
-                EpisodeRenamer.renameEpisodes(folderPath, extension, showName, seasonNum,outputArea,basic.isSelected(),complex.isSelected());
+                EpisodeRenamer.renameEpisodes(folderPath, extension, showName, seasonNum,scroll, outputArea,basic.isSelected(),complex.isSelected());
                 JOptionPane.showMessageDialog(new EpisodeRenamerGUI(), "Renaming Completed !");
             }
             else{
                 repaint();
-                System.out.println("Failure.");
+                outputArea.append("Failure.");
                 outputArea.update(outputArea.getGraphics());
                 if(!extension.startsWith("."))JOptionPane.showMessageDialog(new EpisodeRenamerGUI(), "Invalid Extension, e.g. '.mkv'");
                 else if(basic.isSelected()&&complex.isSelected()) JOptionPane.showMessageDialog(new EpisodeRenamerGUI(), "Can't select both types of subs !");
@@ -192,43 +185,6 @@ public class EpisodeRenamerGUI extends JFrame implements ActionListener {
 
 
 
-    private static class CustomOutputStream extends OutputStream {
-        private final JTextArea textArea;
 
-        public CustomOutputStream(JTextArea textArea) {
-            this.textArea = textArea;
-        }
-
-        @Override
-        public void write(int b) throws IOException {
-            // Append the character to the JTextArea
-            textArea.append(String.valueOf((char) b));
-            // Scroll to the bottom of the JTextArea
-            textArea.setCaretPosition(textArea.getDocument().getLength());
-        }
-    }
-
-    private class HintTextField extends JTextField {
-        public HintTextField(String hint) {
-            _hint = hint;
-        }
-        @Override
-        public void paint(Graphics g) {
-            super.paint(g);
-            if (getText().length() == 0) {
-                int h = getHeight();
-                ((Graphics2D)g).setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-                Insets ins = getInsets();
-                FontMetrics fm = g.getFontMetrics();
-                int c0 = getBackground().getRGB();
-                int c1 = getForeground().getRGB();
-                int m = 0xfefefefe;
-                int c2 = ((c0 & m) >>> 1) + ((c1 & m) >>> 1);
-                g.setColor(new Color(c2, true));
-                g.drawString(_hint, ins.left, h / 2 + fm.getAscent() / 2 - 2);
-            }
-        }
-        private final String _hint;
-    }
 
 }

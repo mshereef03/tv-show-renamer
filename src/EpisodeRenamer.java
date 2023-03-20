@@ -1,4 +1,5 @@
 import javax.swing.*;
+import java.awt.*;
 import java.io.File;
 import java.io.IOException;
 import java.net.HttpURLConnection;
@@ -18,17 +19,20 @@ public class EpisodeRenamer {
 
     final static String apiKey = "16edf408";
 
-    public static void renameEpisodes(String folderPath, String extension, String showName, String seasonNum, JTextArea outputArea, boolean isBasicSubs, boolean isComplexSubs) throws InterruptedException {
+    public static void renameEpisodes(String folderPath, String extension, String showName, String seasonNum,JScrollPane scroll, JTextArea outputArea, boolean isBasicSubs, boolean isComplexSubs) throws InterruptedException {
 
-
+        outputArea.setText("");
+        outputArea.update(outputArea.getGraphics());
         File folder = new File(folderPath);
         if(isBasicSubs)mergeFoldersOneSubtitle(folder);
         if(isComplexSubs)mergeFoldersMultipleLangauges(folder);
         folder = new File(folderPath);
         File[] files = folder.listFiles();
         Arrays.sort(files);
-        System.out.println(Arrays.toString(files));
 
+        scroll.getViewport().setViewPosition(new Point(0,0));
+        outputArea.append("Starting...\n");
+        outputArea.update(outputArea.getGraphics());
         int episodeCounter = 1;
 
         for (File file : files) {
@@ -53,13 +57,13 @@ public class EpisodeRenamer {
                         File newFile = new File(folderPath +"/"+ newFileName);
 
                         if (file.renameTo(newFile)) {
-                            System.out.println(fileName + " renamed to " + newFileName);
+                           outputArea.append(fileName + " renamed to " + newFileName+"\n");
                         } else {
-                            System.out.println("Failed to rename " + fileName);
+                            outputArea.append("Failed to rename " + fileName+"\n");
                             break;
                         }
                     } else {
-                        System.out.println("Failed to get episode name for " + fileName);
+                        outputArea.append("Failed to get episode name for " + fileName+"\n");
                         break;
                     }
                     outputArea.update(outputArea.getGraphics());
