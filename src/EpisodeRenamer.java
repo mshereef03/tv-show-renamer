@@ -46,13 +46,15 @@ public class EpisodeRenamer {
                     conn.connect();
 
                     int responseCode = conn.getResponseCode();
+                    Scanner scanner = new Scanner(url.openStream());
+                    String response = scanner.useDelimiter("\\Z").next();
+                    scanner.close();
+                    char status = response.substring(response.indexOf("Response\":\"") + 11).charAt(0);
 
                     if (responseCode == 200) {
-                        Scanner scanner = new Scanner(url.openStream());
-                        String response = scanner.useDelimiter("\\Z").next();
-                        scanner.close();
 
-                        String episodeName = response.substring(response.indexOf("Title\":\"") + 8, response.indexOf("\",\"Year\""));
+
+                        String episodeName = status=='T'? response.substring(response.indexOf("Title\":\"") + 8, response.indexOf("\",\"Year\"")):"X";
                         String newFileName = showName+" - S"+seasonNum+"E"+(episodeCounter<10?"0"+episodeCounter:episodeCounter) + " - " + episodeName + extension;
                         File newFile = new File(folderPath +"/"+ newFileName);
 
